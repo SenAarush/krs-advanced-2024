@@ -51,7 +51,7 @@ const login = async (req, res) => {
         if (!isMatch) {
             return res.send({ error: "invalid credentials" }).status(400);
         }
-        const token = helpers.createJWT(user._id);
+        const token = helpers.createJWT(user.email);
         res.cookie('authToken', token, { httpOnly: true }).send({ message: "login successful" }).status(200);
     } catch (e) {
         res.json({ message: `error ${e.message}` }).status(400);
@@ -59,7 +59,34 @@ const login = async (req, res) => {
 }
 
 const protected = (req, res) => {
-    res.send({ message: "hello from user" }).status(200);
+    try {
+        res.send(req.user);
+    } catch (e) {
+        res.status(400).send({ error: `${e.message}` });
+    }
+}
+
+const deleteUser = async (req, res) => {
+    try {
+        const { email } = req.params;
+        const { pass } = req.body;
+        if (!email || !pass) {
+            return res.status(400).send({ error: "unable to find required details" });
+        }
+
+        const user = await UserModel.findOne({ email });
+        if (!user) {
+            return res.status(400).send({ error: "invalid credentials" });
+        }
+        const isMatch = await bcrypt.compare(pass, user.password);
+        if(!isMatch) {
+            return res.status(400).send({error: "invalid credentials"});
+        }
+        await UserModel.deleteOne({ email });
+        res.send({ message: "user deleted successfully" }).status(200);
+    } catch (e) {
+        res.send({ error: `${e.message}` }).status(400);
+    }
 }
 
 
@@ -72,5 +99,6 @@ module.exports = {
     healthCheck,
     register,
     login,
-    protected
+    protected,
+    deleteUser
 }
