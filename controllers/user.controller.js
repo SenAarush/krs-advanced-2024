@@ -1,7 +1,5 @@
 const UserModel = require('../models/user.model');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-
 
 const validators = require('../utils/validators');
 const helpers = require('../utils/helpers');
@@ -58,14 +56,6 @@ const login = async (req, res) => {
     }
 }
 
-const protected = (req, res) => {
-    try {
-        res.send(req.user);
-    } catch (e) {
-        res.status(400).send({ error: `${e.message}` });
-    }
-}
-
 const deleteUser = async (req, res) => {
     try {
         const { email } = req.params;
@@ -87,11 +77,6 @@ const deleteUser = async (req, res) => {
     } catch (e) {
         res.send({ error: `${e.message}` }).status(400);
     }
-}
-
-
-const healthCheck = (req, res) => {
-    res.send({ message: "hello from user" }).status(200);
 }
 
 
