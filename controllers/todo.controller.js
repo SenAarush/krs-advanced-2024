@@ -15,7 +15,7 @@ const getTodos = async (req, res) => {
         if (!todos) {
             return res.status(400).send({ message: "no todos found" });
         }
-        res.status(200).json({ todos: todos });
+        res.status(200).json({ message:'Todos fetched', todos: todos });
     }
     catch (e) {
         res.status(400).send({ error: `${e.message}` });
@@ -34,7 +34,7 @@ const createTodo = async (req, res) => {
         }
         const newTodo = new TodoModel({ title, description, status, userId: userExists._id });
         await newTodo.save();
-        res.status(200).send({ message: "todo created successfully" });
+        res.status(200).send({ message: "Todo created" });
     } catch (e) {
         res.status(400).send({ error: `${e.message}` });
     }
@@ -55,7 +55,7 @@ const editTodo = async (req, res) => {
         todo.description = description;
         todo.status = status;
         await todo.save();
-        res.status(200).send({ message: "todo updated successfully" });
+        res.status(200).send({ message: "Todo updated" });
     } catch (e) {
         res.status(400).send({ error: `${e.message}` });
     }
