@@ -10,7 +10,7 @@ To run this project, you will need to add the following environment variables to
 
 ## Models
 
-#### Model for Users
+#### Model for Todos
 ```js
 userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -34,7 +34,7 @@ userId: {
 
 
 
-#### Model for Todos
+#### Model for Users
 ```js
 user = {
     name: {
