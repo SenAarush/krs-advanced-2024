@@ -8,25 +8,25 @@ const register = async (req, res) => {
     try {
         const { name, email, pass, cPass } = req.body;
         if (!name || !email || !pass || !cPass) {
-            return res.send({ error: "unable to find required details" }).status(400);
+            return res.status(400).send({ error: "unable to find required details" });
         }
         if (pass !== cPass) {
-            return res.send({ error: "password and confirm password do not match" }).status(400);
+            return res.status(400).send({ error: "password and confirm password do not match" });
         }
         if (!validators.checkEmail(email)) {
-            return res.send({ error: "invalid email" }).status(400);
+            return res.status(400).send({ error: "invalid email" });
         }
         if (!validators.checkPass(pass)) {
-            return res.send({ error: "invalid password" }).status(400);
+            return res.status(400).send({ error: "invalid password" });
         }
         const user = await UserModel.findOne({ email });
         if (user) {
-            return res.send({ error: "user already exists" }).status(400);
+            return res.status(400).send({ error: "user already exists" });
         }
         const hashedPass = await bcrypt.hash(pass, 12);
         const newUser = new UserModel({ name, email, password: hashedPass });
         await newUser.save();
-        res.send({ message: "user created successfully" }).status(200);
+        res.status(200).send({ message: "user created" });
     } catch (e) {
         res.json({ error: `${e.message}` }).status(400);
     }
@@ -36,23 +36,23 @@ const login = async (req, res) => {
     try {
         const { email, pass, cPass } = req.body;
         if (!email || !pass || !cPass) {
-            return res.send({ error: "unable to find required details" }).status(400);
+            return res.status(400).send({ error: "unable to find required details" });
         }
         if (pass !== cPass) {
-            return res.send({ error: "password and confirm password do not match" }).status(400);
+            return res.status(400).send({ error: "password and confirm password do not match" });
         }
         const user = await UserModel.findOne({ email });
         if (!user) {
-            return res.send({ error: "invalid credentials" }).status(400);
+            return res.status(400).send({ error: "invalid credentials" });
         }
         const isMatch = await bcrypt.compare(pass, user.password);
         if (!isMatch) {
-            return res.send({ error: "invalid credentials" }).status(400);
+            return res.status(400).send({ error: "invalid credentials" });
         }
         const token = helpers.createJWT(user.email);
-        res.cookie('authToken', token, { httpOnly: true }).send({ message: "login successful" }).status(200);
+        res.cookie('authToken', token, { httpOnly: true }).status(200).send({ message: "login success" });
     } catch (e) {
-        res.json({ message: `error ${e.message}` }).status(400);
+        res.status(200).json({ message: `error ${e.message}` });
     }
 }
 
@@ -73,7 +73,7 @@ const deleteUser = async (req, res) => {
             return res.status(400).send({error: "invalid credentials"});
         }
         await UserModel.deleteOne({ email });
-        res.send({ message: "user deleted successfully" }).status(200);
+        res.send({ message: "User deleted" }).status(200);
     } catch (e) {
         res.send({ error: `${e.message}` }).status(400);
     }
@@ -81,9 +81,7 @@ const deleteUser = async (req, res) => {
 
 
 module.exports = {
-    healthCheck,
     register,
     login,
-    protected,
     deleteUser
 }

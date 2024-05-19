@@ -1,9 +1,12 @@
 const express = require('express');
-const app = express.Router();
+const router = express.Router();
+
 const controller = require('../controllers/user.controller');
+const auth = require('../middleware/auth');
+
+router.post('/register', controller.register);
+router.post('/login', controller.login);
+router.delete('/delete/:email', auth, controller.deleteUser);
 
 
-app.get('/health',controller.healthCheck );
-
-
-module.exports = app;
+module.exports = router;
