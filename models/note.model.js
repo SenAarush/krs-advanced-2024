@@ -1,24 +1,28 @@
 const mongoose = require('mongoose');
 
-const todoSchema = mongoose.Schema({
+const noteSchema = mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'TestKRSUser'
+        ref: 'User'
     },
     title: {
         type: String,
         required: true
     },
-    description: {
+    content: {
         type: String,
         required: true
     },
-    status: {
+    isPinned: {
         type: Boolean,
-        required: true
+        default: false
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
 })
 
-const TodoModel = mongoose.model("TestKRSTodo", todoSchema);
-module.exports = TodoModel;
+const NoteModel = mongoose.model("Note", noteSchema);
+module.exports = NoteModel;
